@@ -12,7 +12,7 @@ import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
-
+import gensim.corpora as corpora
 
 @st.cache_data
 def load_data(file):
@@ -42,16 +42,27 @@ def sent_to_words(sentences):
         # deacc=True removes punctuations
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
 
-#@st.cache
+@st.cache
 def remove_stopwords(texts):
     return [[word for word in simple_preprocess(str(doc))
              if word not in stop_words] for doc in texts]
 
-def autopct_format(values):
-        def my_format(pct):
-            total = sum(values)
-            val = int(round(pct*total/100.0))
-            return '{:.1f}%\n({v:d})'.format(pct, v=val)
-        return my_format
-
-
+@st.cache
+def lda_top(data):
+    data1 = data.iloc[:, 0].values.tolist()
+    data_words = list(sent_to_words(data1))
+    # remove stop words
+    data_words = remove_stopwords(data_words)
+    # Create Dictionary
+    id2word = corpora.Dictionary(data_words)
+    # Create Corpus
+    texts = data_words
+     # Term Document Frequency
+    corpus = [id2word.doc2bow(text) for text in texts]
+    # number of topics
+    num_topics = 5 # topics_pos
+    # Build LDA model
+    lda_model = gensim.models.LdaMulticore(corpus=corpus,
+                                           id2word=id2word,
+                                           num_topics=num_topics)
+    return lda_model

@@ -8,11 +8,10 @@ from gensim.parsing.preprocessing import preprocess_string, strip_punctuation,st
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
-import gensim.corpora as corpora
 from pprint import pprint
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from requirefunction import sent_to_words,remove_stopwords,load_data,sentiment_pred,autopct_format #lda_model_fun
+from requirefunction import sent_to_words,remove_stopwords,load_data,sentiment_pred,lda_top #lda_model_fun
 from  matplotlib.ticker import FuncFormatter 
 
 st.set_page_config(layout="wide")
@@ -88,31 +87,29 @@ else:
                                     key="download-tools-csv",)
             
                     # topics_pos = st.number_input('How many topics you want?')
-                    data = positive_re.iloc[:, 0].values.tolist()
+                    # data = positive_re.iloc[:, 0].values.tolist()
 
-                    data_words = list(sent_to_words(data))
-                    # remove stop words
-                    data_words = remove_stopwords(data_words)
-                    # Create Dictionary
-                    id2word = corpora.Dictionary(data_words)
-                    # Create Corpus
-                    texts = data_words
-                        # Term Document Frequency
-                    corpus = [id2word.doc2bow(text) for text in texts]
+                    # data_words = list(sent_to_words(data))
+                    # # remove stop words
+                    # data_words = remove_stopwords(data_words)
+                    # # Create Dictionary
+                    # id2word = corpora.Dictionary(data_words)
+                    # # Create Corpus
+                    # texts = data_words
+                    #     # Term Document Frequency
+                    # corpus = [id2word.doc2bow(text) for text in texts]
 
-                    # number of topics
-                    num_topics = 5 # topics_pos
-                    # Build LDA model
-                    lda_model = gensim.models.LdaMulticore(corpus=corpus,
-                                                        id2word=id2word,
-                                                        num_topics=num_topics)
-                    # Print the Keyword in the 10 topics
-                    #pprint(lda_model.print_topics())
-                    doc_lda = lda_model[corpus]
+                    # # number of topics
+                    # num_topics = 5 # topics_pos
+                    # # Build LDA model
+                    # lda_model = gensim.models.LdaMulticore(corpus=corpus,
+                    #                                     id2word=id2word,
+                    #                                     num_topics=num_topics)
+                    topics = lda_top(positive_re)
 
-                    for t in range(lda_model.num_topics):
+                    for t in range(topics.num_topics):
                         plt.figure()
-                        plt.imshow(WordCloud().fit_words(dict(lda_model.show_topic(t, 200))))
+                        plt.imshow(WordCloud().fit_words(dict(topics.show_topic(t, 200))))
                         plt.axis("off")
                         plt.title("Topic #" + str(t))
                         fig = plt.show()
@@ -124,7 +121,6 @@ else:
 
             if st.sidebar.button("Analyze Negative Reviews",on_click=call_back):
                 negative_re = dff[dff['labels']=='negative']
-                
                 try:
                     st.subheader("Negative Reviews")
                     st.dataframe(negative_re)
@@ -135,36 +131,36 @@ else:
                                     "text/csv",
                                     key="download-tools-csv",)
                     
-                    # topics_neg = st.number_input('How many topics you want?')
-                    data = negative_re.iloc[:, 0].values.tolist()
-                    # fig = lda_model_fun(data)
-                    # st.set_option('deprecation.showPyplotGlobalUse', False)
-                    # st.pyplot(fig)
+                    # # topics_neg = st.number_input('How many topics you want?')
+                    # data = negative_re.iloc[:, 0].values.tolist()
+                    # # fig = lda_model_fun(data)
+                    # # st.set_option('deprecation.showPyplotGlobalUse', False)
+                    # # st.pyplot(fig)
 
-                    data_words = list(sent_to_words(data))
-                    # remove stop words
-                    data_words = remove_stopwords(data_words)
-                    # Create Dictionary
-                    id2word = corpora.Dictionary(data_words)
-                    # Create Corpus
-                    texts = data_words
-                    # Term Document Frequency
-                    corpus = [id2word.doc2bow(text) for text in texts]
+                    # data_words = list(sent_to_words(data))
+                    # # remove stop words
+                    # data_words = remove_stopwords(data_words)
+                    # # Create Dictionary
+                    # id2word = corpora.Dictionary(data_words)
+                    # # Create Corpus
+                    # texts = data_words
+                    # # Term Document Frequency
+                    # corpus = [id2word.doc2bow(text) for text in texts]
 
-                    # number of topics
-                    num_topics = 5 #topics_neg
+                    # # number of topics
+                    # num_topics = 5 #topics_neg
 
-                    # Build LDA model
-                    lda_model = gensim.models.LdaMulticore(corpus=corpus,
-                                                        id2word=id2word,
-                                                        num_topics=num_topics)
+                    # # Build LDA model
+                    # lda_model = gensim.models.LdaMulticore(corpus=corpus,
+                    #                                     id2word=id2word,
+                    #                                     num_topics=num_topics)
                     # Print the Keyword in the 10 topics
                     #pprint(lda_model.print_topics())
-                    doc_lda = lda_model[corpus]
+                    topics_ne = lda_top(negative_re)
 
-                    for t in range(lda_model.num_topics):
+                    for t in range(topics_ne.num_topics):
                         plt.figure()
-                        plt.imshow(WordCloud().fit_words(dict(lda_model.show_topic(t, 200))))
+                        plt.imshow(WordCloud().fit_words(dict(topics_ne.show_topic(t, 200))))
                         plt.axis("off")
                         plt.title("Topic #" + str(t))
                         fig = plt.show()
