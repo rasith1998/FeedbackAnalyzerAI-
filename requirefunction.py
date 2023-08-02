@@ -63,6 +63,7 @@ def lda_top(data):
     num_topics = 5 # topics_pos
     # Build LDA model
     lda_model = gensim.models.LdaMulticore(corpus=corpus,
+               
                                            id2word=id2word,
                                            num_topics=num_topics)
     return lda_model
