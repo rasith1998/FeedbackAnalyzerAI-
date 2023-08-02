@@ -1,2 +1,12 @@
 streamlit
 transformers
+tensorflow
+pytorch
+pandas
+numpy
+seaborn
+gensim
+nltk
+pprint
+wordcloud
+nltk

@@ -2,10 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import tensorflow as tf
-import torch 
-from scipy.special import softmax
-from transformers import TFAutoModelForSequenceClassification,AutoTokenizer, AutoConfig
 import gensim
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import preprocess_string, strip_punctuation,strip_numeric
@@ -91,7 +87,7 @@ else:
                                     "text/csv",
                                     key="download-tools-csv",)
             
-                    topics_pos = st.number_input('How many topics you want?')
+                    # topics_pos = st.number_input('How many topics you want?')
                     data = positive_re.iloc[:, 0].values.tolist()
 
                     data_words = list(sent_to_words(data))
@@ -105,7 +101,7 @@ else:
                     corpus = [id2word.doc2bow(text) for text in texts]
 
                     # number of topics
-                    num_topics = topics_pos
+                    num_topics = 5 # topics_pos
                     # Build LDA model
                     lda_model = gensim.models.LdaMulticore(corpus=corpus,
                                                         id2word=id2word,
@@ -139,7 +135,7 @@ else:
                                     "text/csv",
                                     key="download-tools-csv",)
                     
-                    topics_neg = st.number_input('How many topics you want?')
+                    # topics_neg = st.number_input('How many topics you want?')
                     data = negative_re.iloc[:, 0].values.tolist()
                     # fig = lda_model_fun(data)
                     # st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -156,7 +152,7 @@ else:
                     corpus = [id2word.doc2bow(text) for text in texts]
 
                     # number of topics
-                    num_topics = topics_neg
+                    num_topics = 5 #topics_neg
 
                     # Build LDA model
                     lda_model = gensim.models.LdaMulticore(corpus=corpus,
