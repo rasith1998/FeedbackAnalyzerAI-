@@ -7,6 +7,6 @@ numpy
 seaborn
 gensim
 nltk
-pprint
-wordcloud
+pprint==0.1.0
+wordcloud==1.8.1
 nltk
