@@ -13,6 +13,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 import gensim.corpora as corpora
+from wordcloud import WordCloud
 
 @st.cache_data
 def load_data(file):
@@ -36,18 +37,16 @@ def sentiment_pred(text):
 stop_words = stopwords.words('english')
 stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
 
-@st.cache_data()
 def sent_to_words(sentences):
     for sentence in sentences:
         # deacc=True removes punctuations
         yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))
 
-@st.cache_data()
 def remove_stopwords(texts):
     return [[word for word in simple_preprocess(str(doc))
              if word not in stop_words] for doc in texts]
 
-@st.cache_data()
+@st.cache_data
 def lda_top(data):
     data1 = data.iloc[:, 0].values.tolist()
     data_words = list(sent_to_words(data1))
@@ -65,4 +64,5 @@ def lda_top(data):
     lda_model = gensim.models.LdaMulticore(corpus=corpus,
                                            id2word=id2word,
                                            num_topics=num_topics)
+
     return lda_model
