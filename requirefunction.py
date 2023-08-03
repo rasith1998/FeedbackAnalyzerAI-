@@ -14,6 +14,9 @@ from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 import gensim.corpora as corpora
 from wordcloud import WordCloud
+import os
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 @st.cache_data
 def load_data(file):
